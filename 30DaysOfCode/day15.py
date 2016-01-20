@@ -1,8 +1,12 @@
 def insert(self,head,data):
-    #Complete this method
-        node = head
-        if (!node):
-            return Node(data)
+#Complete this method
+    node = head
+    if not node:
 
-        while(node.next):
-            node = node.next
+        return Node(data)
+
+    while(node.next):
+        node = node.next
+    node.next = Node(data)
+
+    return head
