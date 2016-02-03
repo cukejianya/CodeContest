@@ -65,13 +65,13 @@ def tranverse_grid(n_m, grid):
             #print length
             area_list.append({"x": x, "y": y, "len": length})
             area_list = sorted(area_list, key=lambda k: k["len"], reverse=True)
-    for elm in area_list:
-         print elm
+    # for elm in area_list:
+    #      #print elm
     return max_product(area_list)
 
 def check_coord_arms(l_elm, l_nxt, elm_y, nxt_y):
     coord_map = {elm_y: l_elm, nxt_y: l_nxt}
-    print coord_map
+    #print coord_map
     low_coord = min(elm_y, nxt_y)
     high_coord = max(elm_y, nxt_y)
     if low_coord + coord_map[low_coord] < high_coord - coord_map[high_coord]:
@@ -80,19 +80,25 @@ def check_coord_arms(l_elm, l_nxt, elm_y, nxt_y):
     else:
         return False
 
-
-def check_coord_lines(elm_pt, low_pt, high_pt):
-    pass
+def check_bounds(dim, point, line):
+    return point[dim] >= line[dim] - line["len"] \
+     and point[dim] <= line[dim] + line["len"]
 
 def crossover_check(elm, nxt):
     #if x coords are the same, check for y overlapping
     if elm["x"] is nxt["x"]:
-        print "x is ", elm["x"], "and y:"
+        #print "x is ", elm["x"], "and y:"
         return check_coord_arms(elm["len"], nxt["len"], elm["y"], nxt["y"])
     #if y coords are the same, check for x overlapping
     if elm["y"] is nxt["y"]:
-        print "y is ", elm["y"], "and x:"
+        #print "y is ", elm["y"], "and x:"
         return check_coord_arms(elm["len"], nxt["len"], elm["x"], nxt["x"])
+    #elm[x] is a vertical line and elm[y] is a horizontal. Think Calculas
+    if check_bounds("x", elm, nxt):
+        return not check_bounds("y", nxt, elm)
+    if check_bounds("y", elm, nxt):
+        return not check_bounds("x", nxt, elm)
+
     return True
 
 
@@ -109,11 +115,9 @@ def max_product(area_list):
                 for n_l in range(nxt["len"]+1)[::-1]:
                     new_nxt["len"] = n_l
                     prod_of_area = area(new_elm["len"]) * area(new_nxt["len"])
-                    if prod_of_area is 81:
-                        print prod_of_area,
                     if prod_of_area not in products and crossover_check(new_elm, new_nxt):
                         products.append(prod_of_area)
-    print products
+    #print products
     return max(products)
 
 
