@@ -62,34 +62,60 @@ def tranverse_grid(n_m, grid):
             if cell is "B":
                 continue
             length = check_plus([x, y], n_m, grid)
-            print length
-            area_list.append([" ".join([str(x), str(y)]), length])
-            area_list = sorted(area_list, key=lambda k: k[1], reverse=True)
-    # for elm in area_list:
-    #     print elm
+            #print length
+            area_list.append({"x": x, "y": y, "len": length})
+            area_list = sorted(area_list, key=lambda k: k["len"], reverse=True)
+    for elm in area_list:
+         print elm
     return max_product(area_list)
 
-def check_x()
+def check_coord_arms(l_elm, l_nxt, elm_y, nxt_y):
+    coord_map = {elm_y: l_elm, nxt_y: l_nxt}
+    print coord_map
+    low_coord = min(elm_y, nxt_y)
+    high_coord = max(elm_y, nxt_y)
+    if low_coord + coord_map[low_coord] < high_coord - coord_map[high_coord]:
+        #If pluses dont overlap, return true to break.
+        return True
+    else:
+        return False
 
 
-def
+def check_coord_lines(elm_pt, low_pt, high_pt):
+    pass
 
 def crossover_check(elm, nxt):
-    l_elm, l_nxt = elm[1], nxt[1]
-    coord_elm, coord_nxt = map(int, elm[0].split()), map(int, nxt[0].split())
-    if coord_elm[0] is coord_nxt[0]:
+    #if x coords are the same, check for y overlapping
+    if elm["x"] is nxt["x"]:
+        print "x is ", elm["x"], "and y:"
+        return check_coord_arms(elm["len"], nxt["len"], elm["y"], nxt["y"])
+    #if y coords are the same, check for x overlapping
+    if elm["y"] is nxt["y"]:
+        print "y is ", elm["y"], "and x:"
+        return check_coord_arms(elm["len"], nxt["len"], elm["x"], nxt["x"])
+    return True
 
 
 
 def max_product(area_list):
     if (len(area_list) < 2):
         return 0
-    products = [0]
+    products = [0, 1]
     for idx, elm in enumerate(area_list):
-        coord_elm = map(int, elm[0])
-        for nxt in area_list[idx:]:
-            coord = map(int, elm[0])
-            if
+        for nxt in area_list[idx+1:]:
+            new_elm, new_nxt = elm.copy(), nxt.copy()
+            for e_l in range(elm["len"]+1)[::-1]:
+                new_elm["len"] = e_l
+                for n_l in range(nxt["len"]+1)[::-1]:
+                    new_nxt["len"] = n_l
+                    prod_of_area = area(new_elm["len"]) * area(new_nxt["len"])
+                    if prod_of_area is 81:
+                        print prod_of_area,
+                    if prod_of_area not in products and crossover_check(new_elm, new_nxt):
+                        products.append(prod_of_area)
+    print products
+    return max(products)
+
 
 
 n_m = map(int, raw_input().split())
@@ -97,4 +123,4 @@ grid = []
 for x in range(n_m[0]):
     grid.append(raw_input())
 
-tranverse_grid(n_m, grid)
+print tranverse_grid(n_m, grid)
